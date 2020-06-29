@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/ToDoList.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <section>
+                <label for="title">ToDoList</label>
+                <input type="text" v-model.trim="list" @keyup.enter.prevent='enterHandle' id="title" name="title" placeholder="添加ToDo" required="required" autocomplete="off">
+            </section>
+        </header>
+        <section>
+            <h2>正在进行<span v-text="lists.length">0</span></h2>
+            <ol id="todolist" class="demo-box" v-for='(value,index) in lists' :key='index'>
+				<li draggable='true'>
+					<input type='checkbox' @click.prevent='tabClick(index,false)' />
+					<p><input v-model="value.name"/></p>
+					<a href='#' @click='remove(index,false)'>-</a></li>
+				</li>
+			</ol>
+            <h2>已经完成<span v-text="listss.length">0</span></h2>
+			<ul id="donelist" v-for='(value,index) in listss' :keys='index'>
+				<li draggable='true'>
+					<input type='checkbox' @click.prevent='tabClick(index,true)' checked='checked'/>
+					<p><input v-model="value.name"/></p>
+					<a href='#' @click='remove(index,true)'>-</a></li>
+				</li>
+			</ul>
+        </section>
+        <footer>
+            Copyright © 2014 todolist.cn
+            <a @click="clear">clear</a>
+        </footer>
+    </div>
+</body>
+<script src="./js/vue.js"></script>
+<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var vm = new Vue({
+        el:"#app",
+        data:{
+            lists:[],
+			listss:[],
+			list:[],
+			flag: true,
+			checked:'checked',			
+        },
+        methods:{
+			// getdat:function(){
+			// 	$.get("http://10.36.147.164:9999/todo/getMyTodos?userId=BJ200113003",)
+			// }
+			enterHandle: function() {
+				if (this.list=="") {
+					alert("内容不能为空");
+					return;			
+				}
+			  this.lists.push({id:Date.now(),name:this.list});
+			  this.list="";
+			},
+			tabClick: function(index,flag) {
+				if(flag == false){
+					// console.log(index)
+					// console.log(this.lists[index])
+					this.listss.push({id:this.lists[index].id,name:this.lists[index].name});
+					// console.log(this.listss);
+					this.lists.splice(index,1);
+				}else{
+					// console.log(index)
+					// console.log(this.listss[index])
+					this.lists.push({id:this.listss[index].id,name:this.listss[index].name});
+					this.listss.splice(index,1);
+				}
+			},
+			remove:function(index,flag){
+				if (flag == false) {
+					this.lists.splice(index,1);
+				} else{
+					this.listss.splice(index,1);
+				}			
+			},
+			clear:function(){
+				this.lists.splice(0,this.lists.length);
+				this.listss.splice(0,this.listss.length);
+			}
+        },
+
+    });	
+</script>
+</html>
